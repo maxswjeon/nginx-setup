@@ -11,7 +11,7 @@ Refer [here](https://github.com/maxswjeon/certbot-setup) to set up correctly
   ```bash
   ./bootstrap.sh DEFAULT_HOST
   ```
-  > **Warning**
+  > **Warning**  
   > `bootstrap.sh` must be run in the directory that `docker-compose.yml` is located, since it uses `pwd` to check current directory and set as prefix to utility scripts
 
 2. `docker compose up -d` or `docker-compose up -d` to deploy
