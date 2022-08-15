@@ -1,18 +1,13 @@
 #!/bin/bash
 
-if [ -f .env ]; then
-	source .env
-fi
-
-if [ -z "$PREFIX" ]; then
-	echo "Failed to get PREFIX"
+if [ "$#" -ne 1 ]; then
+	echo "Default Host not given"
+	echo "usage: bootstrap.sh DEFAULT_HOST"
 	exit 1
 fi
 
-if [ -z "$DEFAULT_HOST" ]; then
-	echo "Failed to get DEFAULT_HOST"
-	exit 2
-fi
+PREFIX="$(pwd | sed 's/\//\\\//g')"
+DEFAULT_HOST="$1"
 
 echo "Copying scripts"
 
@@ -28,19 +23,18 @@ sed -i "s/{{ PREFIX }}/${PREFIX}/g" scripts/nginx_disable
 
 if [ ! -f dhparam ]; then
 	echo "Creating dhparam"
-	openssl dhparam -out dhparam 4096
+	# openssl dhparam -out dhparam 4096
 else
 	echo "Using existing dhparam"
 fi
 
 echo "Creating default host"
-scripts/nginx_genconf ssl "${DEFAULT_HOST}"
-
-cp templates/nginx.conf nginx.conf
-sed -i "s/{{ DEFAULT_HOST }}/${DEFAULT_HOST}/g" nginx.conf
 
 if [ ! -d snippets/ssl ]; then
 	mkdir snippets/ssl
 fi
 
+scripts/nginx_genconf ssl "${DEFAULT_HOST}"
 
+cp templates/nginx.conf nginx.conf
+sed -i "s/{{ DEFAULT_HOST }}/${DEFAULT_HOST}/g" nginx.conf

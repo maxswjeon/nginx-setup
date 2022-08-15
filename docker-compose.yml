@@ -13,7 +13,6 @@ services:
       - ./sites-enabled:/etc/nginx/sites-enabled
       - certificates:/etc/nginx/ssl  
       - ./dhparam:/etc/nginx/dhparam
-      - ./index.html:/var/www/index.html
     network_mode: host
 
 volumes:
