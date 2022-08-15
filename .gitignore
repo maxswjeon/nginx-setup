@@ -1,0 +1,12 @@
+.env
+
+logs/
+
+sites-available/
+sites-enabled/
+
+snippets/ssl/
+
+nginx.conf
+
+dhparam

@@ -1,0 +1,21 @@
+version: '3'
+services:
+  nginx:
+    hostname: nginx-main
+    container_name: nginx_main
+    image: nginx:latest
+    restart: always
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./logs:/etc/nginx/logs
+      - ./snippets:/etc/nginx/snippets
+      - ./sites-available:/etc/nginx/sites-available
+      - ./sites-enabled:/etc/nginx/sites-enabled
+      - certificates:/etc/nginx/ssl  
+      - ./dhparam:/etc/nginx/dhparam
+      - ./index.html:/var/www/index.html
+    network_mode: host
+
+volumes:
+  certificates:
+    external: true

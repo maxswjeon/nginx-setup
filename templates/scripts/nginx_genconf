@@ -1,0 +1,73 @@
+#!/bin/bash
+
+PREFIX="{{ PREFIX }}"
+
+function find_ssl_domain() {
+	DOMAIN="$1"
+	while [ -n "${DOMAIN}" ]; do
+		if [ -f "${PREFIX}/snippets/ssl/${DOMAIN}.conf" ]; then
+			echo "${DOMAIN}"
+			break
+		else
+			DOMAIN="${DOMAIN#*.}"
+		fi
+	done
+}
+
+function proxy() {
+	if [ -z "$1" ] || [ -z "$2" ]; then
+		echo "usage: nginx_genconf proxy domain [host] port"
+		exit 1
+	fi
+
+	SSL_DOMAIN="$(find_ssl_domain \""$1"\")"
+
+	if [ -z "${SSL_DOMAIN}" ]; then
+		echo "No SSL Certificate Configuration found for $1"
+		exit 2
+	fi
+
+	TARGET_FILE="${PREFIX}/sites-available/$1.conf"
+
+	cp "${PREFIX}/templates/proxy.conf" "${TARGET_FILE}"
+
+	DOMAIN="$1"
+
+	if [ -z "$3" ]; then
+		# nginx_genconf proxy domain port
+		HOST="127.0.0.1"
+		PORT="$2"
+	else
+		# nginx_genconf proxy domain host port
+		HOST="$2"
+		PORT="$3"
+	fi
+	
+	sed -i "s/{{ DOMAIN }}/${DOMAIN}/g"         "${TARGET_FILE}"
+	sed -i "s/{{ SSL_DOMAIN }}/${SSL_DOMAIN}/g" "${TARGET_FILE}"
+	sed -i "s/{{ HOST }}/${HOST}/g"             "${TARGET_FILE}"
+	sed -i "s/{{ PORT }}/${PORT}/g"             "${TARGET_FILE}"
+}
+
+function ssl() {
+	if [ -z "$1" ]; then
+		echo "usage: nginx_genconf ssl domain"
+		exit 1
+	fi
+
+	DOMAIN="$1"
+	TARGET_FILE="${PREFIX}/snippets/ssl/${DOMAIN}"
+
+	cp "${PREFIX}/templates/ssl.conf" "${TARGET_FILE}"
+
+	sed -i "s/{{ DOMAIN }}/${DOMAIN}/g" "${TARGET_FILE}"
+}
+
+if [ "$1" = "proxy" ]; then
+	proxy "$2" "$3" "$4"
+elif [ "$1" = "ssl" ]; then
+	ssl "$2"
+else
+	echo "Unknown command $1 given"
+	echo "usage: nginx_genconf {proxy,ssl}"
+fi

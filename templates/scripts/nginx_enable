@@ -1,0 +1,26 @@
+#!/bin/bash
+
+PREFIX="{{ PREFIX }}"
+
+cd ${PREFIX}
+
+if [ $# -ne 1 ]; then
+    echo "Need 1 Parameter"
+    exit 1;
+fi
+
+if [ ! -f "./sites-available/${1}.conf" ]; then
+    echo "No Site Found named ${1}"
+    echo "Check if sites-available/${1}.conf exists"
+    exit 2;
+fi
+
+if [ -f "./sites-enabled/${1}.conf" ]; then
+    rm "./sites-enabled/${1}.conf"
+fi
+
+cd sites-enabled
+ln -s "../sites-available/${1}.conf" "${1}.conf"
+
+echo "Site Successfully Enabled"
+
