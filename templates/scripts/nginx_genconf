@@ -4,14 +4,16 @@ PREFIX="{{ PREFIX }}"
 
 function find_ssl_domain() {
 	DOMAIN="$1"
-	while echo "${CERT_DOMAIN}" | grep "\."; do
+	if [ -f "${PREFIX}/snippets/ssl/${DOMAIN}.conf" ]; then
+		echo "${DOMAIN}"
+		break
+	else
+		DOMAIN="${DOMAIN#*.}"
 		if [ -f "${PREFIX}/snippets/ssl/${DOMAIN}.conf" ]; then
 			echo "${DOMAIN}"
 			break
-		else
-			DOMAIN="${DOMAIN#*.}"
 		fi
-	done
+	fi
 }
 
 function proxy() {
