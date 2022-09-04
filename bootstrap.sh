@@ -40,5 +40,10 @@ scripts/nginx_genconf ssl "${DEFAULT_HOST}"
 cp templates/nginx.conf nginx.conf
 sed -i "s/{{ DEFAULT_HOST }}/${DEFAULT_HOST}/g" nginx.conf
 
-mkdir sites-available
-mkdir sites-enabled
+if [ ! -d sites-available ]; then
+	mkdir sites-available
+fi
+
+if [ ! -d sites-enabled ]; then
+	mkdir sites-enabled
+fi
