@@ -4,7 +4,7 @@ PREFIX="{{ PREFIX }}"
 
 function find_ssl_domain() {
 	DOMAIN="$1"
-	while [ -n "${DOMAIN}" ]; do
+	while echo "${CERT_DOMAIN}" | grep "\."; do
 		if [ -f "${PREFIX}/snippets/ssl/${DOMAIN}.conf" ]; then
 			echo "${DOMAIN}"
 			break
