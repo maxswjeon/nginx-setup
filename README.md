@@ -65,4 +65,10 @@ Reloads nginx configuration gracefully using SIGHUP singal (minimal downtime)
 ```bash
 scripts/nginx_reload
 ```
+### `nginx_list`
+List enabled / available sites
 
+#### Usage
+```bash
+scripts/nginx_list
+```
