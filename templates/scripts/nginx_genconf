@@ -20,7 +20,7 @@ function proxy() {
 		exit 1
 	fi
 
-	SSL_DOMAIN="$(find_ssl_domain \""$1"\")"
+	SSL_DOMAIN="$(find_ssl_domain "$1")"
 
 	if [ -z "${SSL_DOMAIN}" ]; then
 		echo "No SSL Certificate Configuration found for $1"
