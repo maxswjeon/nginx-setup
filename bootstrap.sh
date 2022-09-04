@@ -52,3 +52,4 @@ fi
 rm -r templates/scripts
 rm templates/nginx.conf
 rm -rf .git
+rm bootstrap.sh
