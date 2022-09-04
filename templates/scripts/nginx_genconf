@@ -58,7 +58,7 @@ function ssl() {
 	fi
 
 	DOMAIN="$1"
-	TARGET_FILE="${PREFIX}/snippets/ssl/${DOMAIN}"
+	TARGET_FILE="${PREFIX}/snippets/ssl/${DOMAIN}.conf"
 
 	cp "${PREFIX}/templates/ssl.conf" "${TARGET_FILE}"
 
