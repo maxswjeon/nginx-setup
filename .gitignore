@@ -8,6 +8,6 @@ sites-enabled/
 scripts/
 snippets/ssl/
 
-nginx.conf
+/nginx.conf
 
 dhparam
