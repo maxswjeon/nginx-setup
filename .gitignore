@@ -5,7 +5,8 @@ logs/
 sites-available/
 sites-enabled/
 
-/scripts/
+scripts/
+!templates/scripts/
 snippets/ssl/
 
 /nginx.conf
