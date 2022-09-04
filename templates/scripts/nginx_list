@@ -19,7 +19,7 @@ for f in "${PREFIX}"/sites-enabled/*.conf; do
 		break
 	fi
 
-	ORIGIN=$(echo "$f" | rev | cut -d '/' -f 1 | cut -d '.' -f 1 | rev)
+	ORIGIN=$(echo "$f" | rev | cut -d '/' -f 1 | cut -d '.' -f 2- | rev)
 
 	PROXY_PASS=$(grep proxy_pass\  "$f" | head -n 1 | xargs | cut -d ' ' -f 2)
 	SCHEME=$(echo "$PROXY_PASS" | cut -d ':' -f 1)
@@ -121,7 +121,7 @@ for f in "${PREFIX}"/sites-available/*.conf; do
 		exit 0
 	fi
 
-	ORIGIN=$(echo "$f" | rev | cut -d '/' -f 1 | cut -d '.' -f 1 | rev)
+	ORIGIN=$(echo "$f" | rev | cut -d '/' -f 1 | cut -d '.' -f 2- | rev)
 
 	if echo "$ENABLED_SITES" | grep -q "^$ORIGIN\$"; then
 		continue	

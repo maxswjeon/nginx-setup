@@ -6,12 +6,10 @@ function find_ssl_domain() {
 	DOMAIN="$1"
 	if [ -f "${PREFIX}/snippets/ssl/${DOMAIN}.conf" ]; then
 		echo "${DOMAIN}"
-		break
 	else
 		DOMAIN="${DOMAIN#*.}"
 		if [ -f "${PREFIX}/snippets/ssl/${DOMAIN}.conf" ]; then
 			echo "${DOMAIN}"
-			break
 		fi
 	fi
 }
