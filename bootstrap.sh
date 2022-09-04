@@ -20,6 +20,7 @@ cp -a templates/scripts/* scripts/
 sed -i "s/{{ PREFIX }}/${PREFIX}/g" scripts/nginx_genconf
 sed -i "s/{{ PREFIX }}/${PREFIX}/g" scripts/nginx_enable
 sed -i "s/{{ PREFIX }}/${PREFIX}/g" scripts/nginx_disable
+sed -i "s/{{ PREFIX }}/${PREFIX}/g" scripts/nginx_list
 
 if [ ! -f dhparam ]; then
 	echo "Creating dhparam"

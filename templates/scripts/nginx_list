@@ -1,0 +1,212 @@
+#!/bin/bash
+
+PREFIX="{{ PREFIX }}"
+
+cd "${PREFIX}"
+
+echo "===== Enabled Sites ====="
+MAX_ORIGIN_WIDTH=6
+MAX_SCHEME_WIDTH=6
+MAX_TARGET_WIDTH=6
+MAX_PORT_WIDTH=4
+
+DATA=""
+ENABLED_SITES=""
+
+for f in "${PREFIX}"/sites-enabled/*.conf; do
+	if [ "$f" = "${PREFIX}/sites-enabled/*.conf" ]; then
+		echo "No Enabled Sites"
+		break
+	fi
+
+	ORIGIN=$(echo "$f" | rev | cut -d '/' -f 1 | rev)
+
+	PROXY_PASS=$(grep proxy_pass\  "$f" | head -n 1 | xargs | cut -d ' ' -f 2)
+	SCHEME=$(echo "$PROXY_PASS" | cut -d ':' -f 1)
+	TARGET=$(echo "$PROXY_PASS" | cut -d ':' -f 2)
+	PORT=$(echo "$PROXY_PASS" | cut -d ':' -f 3)
+
+	TARGET=${TARGET:2}
+	PORT=${PORT::-1}
+
+	if [ ${#ORIGIN} -gt $MAX_ORIGIN_WIDTH ]; then
+		MAX_ORIGIN_WIDTH=${#ORIGIN}
+	fi
+
+	if [ ${#SCHEME} -gt $MAX_SCHEME_WIDTH ]; then
+		MAX_SCHEME_WIDTH=${#SCHEME}
+	fi
+	
+	if [ ${#TARGET} -gt $MAX_TARGET_WIDTH ]; then
+		MAX_TARGET_WIDTH=${#TARGET}
+	fi
+	
+	if [ ${#PORT} -gt $MAX_PORT_WIDTH ]; then
+		MAX_PORT_WIDTH=${#PORT}
+	fi
+	
+	ENABLED_SITES="$ENABLED_SITES$ORIGIN
+"
+	DATA="$DATA$ORIGIN $SCHEME $TARGET $PORT
+"
+done
+
+MAX_ORIGIN_WIDTH=$((MAX_ORIGIN_WIDTH + 2))
+MAX_SCHEME_WIDTH=$((MAX_SCHEME_WIDTH + 2))
+MAX_TARGET_WIDTH=$((MAX_TARGET_WIDTH + 2))
+MAX_PORT_WIDTH=$((MAX_PORT_WIDTH + 2))
+
+if [ -n "$ENABLED_SITES" ]; then
+	echo -n "Origin"
+	for _ in $(seq 6 $MAX_ORIGIN_WIDTH); do
+		echo -n " "
+	done
+	echo -n "Scheme"
+	for _ in $(seq 6 $MAX_SCHEME_WIDTH); do
+		echo -n " "
+	done
+	echo -n "Target"
+	for _ in $(seq 6 $MAX_TARGET_WIDTH); do
+		echo -n " "
+	done
+	echo -n "Port"
+	for _ in $(seq 4 $MAX_PORT_WIDTH); do
+		echo -n " "
+	done
+	echo
+
+	IFS_OLD=$IFS
+	IFS=$'\n'
+	for d in $DATA; do
+		ORIGIN=$(echo "$d" | cut -d ' ' -f 1)
+		SCHEME=$(echo "$d" | cut -d ' ' -f 2)
+		TARGET=$(echo "$d" | cut -d ' ' -f 3)
+		PORT=$(echo "$d" | cut -d ' ' -f 4)
+
+		echo -n "$ORIGIN"
+		for _ in $(seq ${#ORIGIN} $MAX_ORIGIN_WIDTH); do
+			echo -n " "
+		done
+		echo -n "$SCHEME"
+		for _ in $(seq ${#SCHEME} $MAX_SCHEME_WIDTH); do
+			echo -n " "
+		done
+		echo -n "$TARGET"
+		for _ in $(seq ${#TARGET} $MAX_TARGET_WIDTH); do
+			echo -n " "
+		done
+		echo -n "$PORT"
+		for _ in $(seq ${#PORT} $MAX_TARGET_WIDTH); do
+			echo -n " "
+		done
+		echo
+	done
+	IFS=$IFS_OLD
+fi
+
+echo
+echo "===== Available Sites ====="
+
+MAX_ORIGIN_WIDTH=6
+MAX_SCHEME_WIDTH=6
+MAX_TARGET_WIDTH=6
+MAX_PORT_WIDTH=4
+
+DATA=""
+
+
+for f in "${PREFIX}"/sites-available/*.conf; do
+	if [ "$f" = "${PREFIX}/sites-available/*.conf" ]; then
+		echo "No Available Sites"
+		exit 0
+	fi
+
+	ORIGIN=$(echo "$f" | rev | cut -d '/' -f 1 | rev)
+
+	if echo "$ENABLED_SITES" | grep -q "^$ORIGIN\$"; then
+		continue	
+	fi
+	
+
+	PROXY_PASS=$(grep proxy_pass\  "$f" | head -n 1 | xargs | cut -d ' ' -f 2)
+	SCHEME=$(echo "$PROXY_PASS" | cut -d ':' -f 1)
+	TARGET=$(echo "$PROXY_PASS" | cut -d ':' -f 2)
+	PORT=$(echo "$PROXY_PASS" | cut -d ':' -f 3)
+
+	TARGET=${TARGET:2}
+	PORT=${PORT::-1}
+
+	if [ ${#ORIGIN} -gt $MAX_ORIGIN_WIDTH ]; then
+		MAX_ORIGIN_WIDTH=${#ORIGIN}
+	fi
+
+	if [ ${#SCHEME} -gt $MAX_SCHEME_WIDTH ]; then
+		MAX_SCHEME_WIDTH=${#SCHEME}
+	fi
+	
+	if [ ${#TARGET} -gt $MAX_TARGET_WIDTH ]; then
+		MAX_TARGET_WIDTH=${#TARGET}
+	fi
+	
+	if [ ${#PORT} -gt $MAX_PORT_WIDTH ]; then
+		MAX_PORT_WIDTH=${#PORT}
+	fi
+	
+	DATA="$DATA$ORIGIN $SCHEME $TARGET $PORT
+"
+done
+
+MAX_ORIGIN_WIDTH=$((MAX_ORIGIN_WIDTH + 2))
+MAX_SCHEME_WIDTH=$((MAX_SCHEME_WIDTH + 2))
+MAX_TARGET_WIDTH=$((MAX_TARGET_WIDTH + 2))
+MAX_PORT_WIDTH=$((MAX_PORT_WIDTH + 2))
+
+if [ -n "$DATA" ]; then
+	echo -n "Origin"
+	for _ in $(seq 6 $MAX_ORIGIN_WIDTH); do
+		echo -n " "
+	done
+	echo -n "Scheme"
+	for _ in $(seq 6 $MAX_SCHEME_WIDTH); do
+		echo -n " "
+	done
+	echo -n "Target"
+	for _ in $(seq 6 $MAX_TARGET_WIDTH); do
+		echo -n " "
+	done
+	echo -n "Port"
+	for _ in $(seq 4 $MAX_PORT_WIDTH); do
+		echo -n " "
+	done
+	echo
+
+	IFS_OLD=$IFS
+	IFS=$'\n'
+	for d in $DATA; do
+		ORIGIN=$(echo "$d" | cut -d ' ' -f 1)
+		SCHEME=$(echo "$d" | cut -d ' ' -f 2)
+		TARGET=$(echo "$d" | cut -d ' ' -f 3)
+		PORT=$(echo "$d" | cut -d ' ' -f 4)
+
+		echo -n "$ORIGIN"
+		for _ in $(seq ${#ORIGIN} $MAX_ORIGIN_WIDTH); do
+			echo -n " "
+		done
+		echo -n "$SCHEME"
+		for _ in $(seq ${#SCHEME} $MAX_SCHEME_WIDTH); do
+			echo -n " "
+		done
+		echo -n "$TARGET"
+		for _ in $(seq ${#TARGET} $MAX_TARGET_WIDTH); do
+			echo -n " "
+		done
+		echo -n "$PORT"
+		for _ in $(seq ${#PORT} $MAX_PORT_WIDTH); do
+			echo -n " "
+		done
+		echo
+	done
+else 
+	echo "No available sites found"
+	echo "All sites might be enabled"
+fi
