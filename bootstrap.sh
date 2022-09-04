@@ -47,3 +47,8 @@ fi
 if [ ! -d sites-enabled ]; then
 	mkdir sites-enabled
 fi
+
+# Clean
+rm -r templates/scripts
+rm templates/nginx.conf
+rm -rf .git
