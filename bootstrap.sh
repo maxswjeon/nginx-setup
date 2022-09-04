@@ -23,7 +23,7 @@ sed -i "s/{{ PREFIX }}/${PREFIX}/g" scripts/nginx_disable
 
 if [ ! -f dhparam ]; then
 	echo "Creating dhparam"
-	# openssl dhparam -out dhparam 4096
+	openssl dhparam -out dhparam 4096
 else
 	echo "Using existing dhparam"
 fi
